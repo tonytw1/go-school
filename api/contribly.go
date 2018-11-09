@@ -11,8 +11,10 @@ type EventType struct {
 	Name string
 }
 
+const api_root = "https://api.contribly.com/1"
+
 func FetchEventTypes() ([]EventType, error) {
-	resp, err := http.Get("https://api.contribly.com/1/event-types")
+	resp, err := http.Get(api_root + "/event-types")
 	if err != nil {
 		return nil, err
 	} else {
