@@ -55,7 +55,7 @@ func GetCards() ([]TrelloCard, error) {
 		q.Set("key", key)
 		q.Set("token", token)
 		q.Set("query", "label:changelog")
-		q.Set("cards_limit", "10")
+		q.Set("cards_limit", "3")
 		q.Set("modelTypes", "cards")
 		u.RawQuery = q.Encode()
 		resp, err := http.Get(u.String())
