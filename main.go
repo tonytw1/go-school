@@ -11,7 +11,7 @@ func main() {
 	} else {
 		for i := 0; i < len(cards); i++ {
 			println(cards[i].Name)
-			println(cards[i].Desc)
+			println(cards[i].DateLastActivity.String())
 		}
 	}
 }

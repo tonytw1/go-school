@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 type EventType struct {
@@ -17,9 +18,10 @@ type TrelloSearchResult struct {
 }
 
 type TrelloCard struct {
-	Id   string
-	Name string
-	Desc string
+	Id               string
+	Name             string
+	Desc             string
+	DateLastActivity time.Time
 }
 
 const trello_api = "https://api.trello.com/1"
