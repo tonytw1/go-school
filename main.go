@@ -7,7 +7,7 @@ import (
 )
 
 type EventType struct {
-	Id string
+	Id   string
 	Name string
 }
 
@@ -34,7 +34,7 @@ func fetchEventTypes() ([]EventType, error) {
 
 func main() {
 	event_types, err := fetchEventTypes()
-	if (err != nil) {
+	if err != nil {
 		panic(err)
 	} else {
 		for i := 0; i < len(event_types); i++ {
@@ -42,4 +42,5 @@ func main() {
 			println(eventType.Name)
 		}
 	}
+	println(meh())
 }
