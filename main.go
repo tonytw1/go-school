@@ -11,25 +11,21 @@ type EventType struct {
 	Name string
 }
 
-func unmarshallEventTypes(content []byte) []EventType {
+func unmarshallEventTypes(content []byte) ([]EventType, error) {
 	var eventTypes []EventType
 	err := json.Unmarshal(content, &eventTypes)
-	if err != nil {
-		panic(err)
-	} else {
-		return eventTypes
-	}
+	return eventTypes, err
 }
 
-func fetchEventTypes() []EventType {
+func fetchEventTypes() ([]EventType, error) {
 	resp, err := http.Get("https://api.contribly.com/1/event-types")
 	if err != nil {
-		panic(err)
+		return nil, err
 	} else {
 		defer resp.Body.Close()
 		content, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			panic(err)
+			return nil, err
 		} else {
 			return unmarshallEventTypes(content)
 		}
@@ -37,9 +33,13 @@ func fetchEventTypes() []EventType {
 }
 
 func main() {
-	event_types := fetchEventTypes()
-	for i := 0; i < len(event_types); i++ {
-		eventType := event_types[i]
-		println(eventType.Name)
+	event_types, err := fetchEventTypes()
+	if (err != nil) {
+		panic(err)
+	} else {
+		for i := 0; i < len(event_types); i++ {
+			eventType := event_types[i]
+			println(eventType.Name)
+		}
 	}
 }
