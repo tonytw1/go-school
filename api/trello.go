@@ -67,7 +67,8 @@ func GetCards() ([]TrelloCard, error) {
 			if err != nil {
 				return nil, err
 			} else {
-				result, err := unmarshallTrelloSearch(content)
+				var result TrelloSearchResult
+				err := json.Unmarshal(content, &result)
 				if err != nil {
 					return nil, nil
 				} else {
@@ -96,7 +97,8 @@ func GetCardActions(id string) ([]TrelloAction, error) {
 			if err != nil {
 				return nil, err
 			} else {
-				result, err := unmarshallTrelloActions(content)
+				var result []TrelloAction
+				err := json.Unmarshal(content, &result)
 				if err != nil {
 					return nil, nil
 				} else {
@@ -105,16 +107,4 @@ func GetCardActions(id string) ([]TrelloAction, error) {
 			}
 		}
 	}
-}
-
-func unmarshallTrelloSearch(content []byte) (TrelloSearchResult, error) {
-	var result TrelloSearchResult
-	err := json.Unmarshal(content, &result)
-	return result, err
-}
-
-func unmarshallTrelloActions(content []byte) ([]TrelloAction, error) {
-	var result []TrelloAction
-	err := json.Unmarshal(content, &result)
-	return result, err
 }
