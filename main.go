@@ -1,16 +1,26 @@
 package main
 
-func main() {
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
+
+func handler(w http.ResponseWriter, r *http.Request) {
 	changelogItems, err := BuildChangeLog()
 	if err != nil {
 		panic(err)
 	} else {
 		for i := 0; i < len(changelogItems); i++ {
 			item := changelogItems[i]
-			println(item.Card.Name)
-			println(item.Date.String())
-			println(item.Card.Desc)
-			println()
+			fmt.Fprintf(w, item.Card.Name)
+			fmt.Fprintf(w, item.Date.String())
+			fmt.Fprintf(w, item.Card.Desc)
 		}
 	}
+}
+
+func main() {
+	http.HandleFunc("/", handler)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
