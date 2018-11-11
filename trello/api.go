@@ -1,45 +1,11 @@
-package api
+package trello
 
 import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"time"
 )
-
-type EventType struct {
-	Id   string
-	Name string
-}
-
-type TrelloSearchResult struct {
-	Cards []TrelloCard
-}
-
-type TrelloCard struct {
-	Id               string
-	Name             string
-	Desc             string
-	DateLastActivity time.Time
-}
-
-type TrelloActionList struct {
-	Id   string
-	Name string
-}
-
-type TrelloActionData struct {
-	ListBefore TrelloActionList
-	ListAfter  TrelloActionList
-}
-
-type TrelloAction struct {
-	Id   string
-	Date time.Time
-	Type string
-	Data TrelloActionData
-}
 
 const trello_api = "https://api.trello.com/1"
 const key = ""
