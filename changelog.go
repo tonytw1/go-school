@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/tonytw1/go-school/trello"
 	"time"
-	"trelloChangelog/trello"
 )
 
 type ChangelogItem struct {
