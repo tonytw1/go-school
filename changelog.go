@@ -23,16 +23,14 @@ func BuildChangeLog() ([]ChangelogItem, error) {
 		panic(err)
 
 	} else {
+		ch := make(chan CardWithActions, 100)
+		for i := 0; i < len(cards); i++ {
+			decorateCardWithActions(cards[i], ch)
+		}
+
 		var cardsWithActions []CardWithActions
-		for i := 0; i < len(cards); i++ { // TODO this would be a classic map into async calls in Scala; how to make concurrent in go?
-			card := cards[i]
-			actions, err := trello.GetCardActions(card.Id)
-			if err != nil {
-				panic(err)
-			} else {
-				withActions := CardWithActions{card, actions}
-				cardsWithActions = append(cardsWithActions, withActions)
-			}
+		for i := 0; i < len(cards); i++ {
+			cardsWithActions = append(cardsWithActions, <-ch)
 		}
 
 		for i := 0; i < len(cardsWithActions); i++ {
@@ -49,6 +47,15 @@ func BuildChangeLog() ([]ChangelogItem, error) {
 	}
 
 	return changelogItems, nil
+}
+
+func decorateCardWithActions(card trello.TrelloCard, ch chan CardWithActions) {
+	actions, err := trello.GetCardActions(card.Id)
+	if err != nil {
+		panic(err)
+	} else {
+		ch <- CardWithActions{card, actions}
+	}
 }
 
 func cardMovesFromActions(actions []trello.TrelloAction) []trello.TrelloAction {
