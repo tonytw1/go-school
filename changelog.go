@@ -39,18 +39,21 @@ func BuildChangeLog() ([]ChangelogItem, error) {
 }
 
 func cardMoves(card trello.TrelloCard) ([]trello.TrelloAction, error) {
-	trelloActions, e := trello.GetCardActions(card.Id)
+	actions, e := trello.GetCardActions(card.Id)
 	if e != nil {
 		panic(e)
-
 	} else {
-		var moveActions []trello.TrelloAction
-		for j := 0; j < len(trelloActions); j++ {
-			action := trelloActions[j]
-			if len(action.Data.ListBefore.Name) > 0 && len(action.Data.ListAfter.Name) > 0 {
-				moveActions = append(moveActions, action)
-			}
-		}
-		return moveActions, nil
+		cardMovesFromActions(actions)
 	}
+}
+
+func cardMovesFromActions(actions []trello.TrelloAction) []trello.TrelloAction {
+	var moves []trello.TrelloAction
+	for j := 0; j < len(actions); j++ {
+		action := actions[j]
+		if len(action.Data.ListBefore.Name) > 0 && len(action.Data.ListAfter.Name) > 0 {
+			moves = append(moves, action)
+		}
+	}
+	return moves
 }
