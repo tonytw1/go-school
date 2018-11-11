@@ -23,9 +23,9 @@ func BuildChangeLog() ([]ChangelogItem, error) {
 		panic(err)
 
 	} else {
-		ch := make(chan CardWithActions, 100)
+		ch := make(chan CardWithActions)
 		for i := 0; i < len(cards); i++ {
-			decorateCardWithActions(cards[i], ch)
+			go decorateCardWithActions(cards[i], ch)
 		}
 
 		var cardsWithActions []CardWithActions
