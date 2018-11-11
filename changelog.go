@@ -10,6 +10,11 @@ type ChangelogItem struct {
 	Date time.Time
 }
 
+type CardWithActions struct {
+	Card    trello.TrelloCard
+	actions []trello.TrelloAction
+}
+
 func BuildChangeLog() ([]ChangelogItem, error) {
 	var changelogItems []ChangelogItem
 
@@ -18,33 +23,32 @@ func BuildChangeLog() ([]ChangelogItem, error) {
 		panic(err)
 
 	} else {
+		var cardsWithActions []CardWithActions
 		for i := 0; i < len(cards); i++ {
 			card := cards[i]
-			moves, err := cardMoves(card)
+			actions, err := trello.GetCardActions(card.Id)
 			if err != nil {
 				panic(err)
 			} else {
-				if len(moves) > 0 {
-					latestMove := moves[0]
-					if latestMove.Data.ListAfter.Name == "Done" {
-						item := ChangelogItem{card, latestMove.Date}
-						changelogItems = append(changelogItems, item)
-					}
+				withActions := CardWithActions{card, actions}
+				cardsWithActions = append(cardsWithActions, withActions)
+			}
+		}
+
+		for i := 0; i < len(cardsWithActions); i++ {
+			cardWithActions := cardsWithActions[i]
+			moves := cardMovesFromActions(cardWithActions.actions)
+			if len(moves) > 0 {
+				latestMove := moves[0]
+				if latestMove.Data.ListAfter.Name == "Done" {
+					item := ChangelogItem{cardWithActions.Card, latestMove.Date}
+					changelogItems = append(changelogItems, item)
 				}
 			}
 		}
 	}
 
 	return changelogItems, nil
-}
-
-func cardMoves(card trello.TrelloCard) ([]trello.TrelloAction, error) {
-	actions, e := trello.GetCardActions(card.Id)
-	if e != nil {
-		panic(e)
-	} else {
-		cardMovesFromActions(actions)
-	}
 }
 
 func cardMovesFromActions(actions []trello.TrelloAction) []trello.TrelloAction {
