@@ -15,17 +15,17 @@ type CardWithActions struct {
 	actions []trello.TrelloAction
 }
 
-func BuildChangeLog() ([]ChangelogItem, error) {
+func BuildChangeLog(key string, token string) ([]ChangelogItem, error) {
 	var changelogItems []ChangelogItem
 
-	cards, err := trello.GetCards()
+	cards, err := trello.GetCards(key, token)
 	if err != nil {
 		panic(err)
 
 	} else {
 		ch := make(chan CardWithActions)
 		for i := 0; i < len(cards); i++ {
-			go decorateCardWithActions(cards[i], ch)
+			go decorateCardWithActions(cards[i], ch, key, token)
 		}
 
 		var cardsWithActions []CardWithActions
@@ -49,8 +49,8 @@ func BuildChangeLog() ([]ChangelogItem, error) {
 	return changelogItems, nil
 }
 
-func decorateCardWithActions(card trello.TrelloCard, ch chan CardWithActions) {
-	actions, err := trello.GetCardActions(card.Id)
+func decorateCardWithActions(card trello.TrelloCard, ch chan CardWithActions, key string, token string) {
+	actions, err := trello.GetCardActions(card.Id, key, token)
 	if err != nil {
 		panic(err)
 	} else {

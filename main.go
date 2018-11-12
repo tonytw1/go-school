@@ -4,10 +4,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	changelogItems, err := BuildChangeLog()
+	key := os.Getenv("TRELLO_KEY")
+	token := os.Getenv("TRELLO_TOKEN")
+
+	changelogItems, err := BuildChangeLog(key, token)
 	if err != nil {
 		panic(err)
 	} else {

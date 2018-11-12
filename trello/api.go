@@ -8,10 +8,8 @@ import (
 )
 
 const trello_api = "https://api.trello.com/1"
-const key = ""
-const token = ""
 
-func GetCards() ([]TrelloCard, error) {
+func GetCards(key string, token string) ([]TrelloCard, error) {
 	u, e := url.Parse(trello_api + "/search")
 	if e != nil {
 		return nil, e
@@ -21,7 +19,7 @@ func GetCards() ([]TrelloCard, error) {
 		q.Set("key", key)
 		q.Set("token", token)
 		q.Set("query", "label:changelog")
-		q.Set("cards_limit", "3")
+		q.Set("cards_limit", "10")
 		q.Set("modelTypes", "cards")
 		u.RawQuery = q.Encode()
 		resp, err := http.Get(u.String())
@@ -45,7 +43,7 @@ func GetCards() ([]TrelloCard, error) {
 	}
 }
 
-func GetCardActions(id string) ([]TrelloAction, error) {
+func GetCardActions(id string, key string, token string) ([]TrelloAction, error) {
 	u, e := url.Parse(trello_api + "/cards/" + id + "/actions")
 	if e != nil {
 		return nil, e
